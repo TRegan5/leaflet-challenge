@@ -5,14 +5,70 @@ let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_we
 d3.json(queryUrl).then(function (data) {
   features = data.features;
   console.log(data.features);
-  // 1.
-  // Pass the features to a createFeatures() function:
-  createMap(features);
-  //createFeatures(data.features);
+  let myMap = L.map('map', {
+    center: [
+      37.09, -95.71
+    ],
+    zoom: 2,
+    //layers: [street]//, earthquakes]
+  });
+  // Create base layers
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(myMap);
 
+  function location(feature) {
+    return [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
+  }
+  function markerSize(feature) {
+    return Math.sqrt(feature.properties.mag)*100000;//
+  }
+  function quakeDepthColor(feature) {
+    depth = feature.geometry.coordinates[2];
+    if (depth < 10) {
+      color = '#00ff00';
+    }
+    else if (depth < 30) {
+      color = '#ffff00';
+    }
+    else if (depth < 50) {
+      color = '#ffcc66';
+    }
+    else if (depth < 70) {
+      color = '#ffcc00';
+    }
+    else if (depth < 90) {
+      color = '#ff9900';
+    }
+    else {
+      color = '#ff0000';
+    }
+    return color; 
+  }
+  
+  // Create overlay object to hold our overlay
+  /*let overlayMaps = {
+    'Earthquakes': earthquakes
+  }*/
+    
+  // Create map, giving it streetmap and earthquakes layers to display on load
+  for (i = 0; i < features.length; i++) {
+    quake = features[i];
+    // Conditionals for country points
+    L.circle(location(quake), {
+      weight: 1,//stroke: false,
+      fillOpacity: 0.75,
+      color: 'black',
+      fillColor: quakeDepthColor(quake),
+      radius: markerSize(quake)
+    }).bindPopup(`<h3>${quake.properties.place}</h3><hr>
+                  <p>Magnitude: ${quake.properties.mag}</p>
+                  <p>Depth: ${quake.geometry.coordinates[2]}</p>`).addTo(myMap);
+    console.log(quake);
+  }
   
 });
-
+/*
 function createMap(earthquakeData) {
   function quakeInfo(feature, layer) {
     layer.bindPopup(`<h3>${feature.properties.place}</h3><hr>
@@ -58,7 +114,7 @@ function createMap(earthquakeData) {
   // Create base layers
   let street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  })
+  });
   //let grayscale = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
     //attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
   //});
@@ -66,12 +122,12 @@ function createMap(earthquakeData) {
   let baseMaps = {
     'Street Map': street,
     //'Grayscale Map': grayscale
-  };
+  }
   
   // Create overlay object to hold our overlay
   let overlayMaps = {
     'Earthquakes': earthquakes
-  };
+  }
     
   // Create map, giving it streetmap and earthquakes layers to display on load
   let myMap = L.map('map', {
@@ -80,7 +136,7 @@ function createMap(earthquakeData) {
     ],
     zoom: 2,
     layers: [street]//, earthquakes]
-  });
+  })
   for (i = 0; i < features.length; i++) {
     quake = features[i];
     // Conditionals for country points
@@ -95,8 +151,8 @@ function createMap(earthquakeData) {
   // Create a layer control.
   // Pass it our baseMaps and overlayMaps.
   // Add the layer control to the map.
-  L.control.layers(baseMaps, overlayMaps, {
+  L.control.layers(baseMaps, {
     collapsed: false
   }).addTo(myMap);
 }
-  
+  */
