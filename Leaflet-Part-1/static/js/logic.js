@@ -21,7 +21,7 @@ d3.json(queryUrl).then(function (data) {
     return [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
   }
   function markerSize(feature) {
-    return Math.sqrt(feature.properties.mag)*100000;//
+    return Math.sqrt(feature.properties.mag)*50000;//
   }
   function quakeDepthColor(feature) {
     depth = feature.geometry.coordinates[2];
@@ -66,7 +66,29 @@ d3.json(queryUrl).then(function (data) {
                   <p>Depth: ${quake.geometry.coordinates[2]}</p>`).addTo(myMap);
     console.log(quake);
   }
-  
+  //var legend = 
+  L.control.Legend({
+    position: 'bottomright'
+    /*legends: [{
+      type: 'rectangle'
+    }]*/
+  });//.addTo(myMap);
+  legend.onAdd = function(myMap) {
+    var div = L.DomUtil.create('div', 'info legend'),
+      depths = [-10, 10, 30, 50, 70, 90],
+      labels = [],
+      from, to;
+    for (var i = 0; i < depths.length; i++) {
+      from = depths[i];
+      to = depths[i + 1];
+      labels.push(
+        '<i style="background:' + quakeDepthColor(from + 1) + '">[color]</i> ' +
+        from + (to ? '&ndash;' + to : '+'));
+    }
+    div.innerHTML = labels.join('<br>');
+    return div;
+  };
+  legend.addTo(myMap);
 });
 /*
 function createMap(earthquakeData) {
