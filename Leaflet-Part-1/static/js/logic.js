@@ -1,5 +1,5 @@
 // Store earthquake API endpoint as queryUrl
-let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson";
+let queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson";
 
 // Perform a GET request to the query URL.
 d3.json(queryUrl).then(function (data) {
@@ -21,7 +21,7 @@ d3.json(queryUrl).then(function (data) {
     return [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
   }
   function markerSize(feature) {
-    return Math.sqrt(feature.properties.mag)*50000;//
+    return (feature.properties.mag*10)**3;//
   }
   function quakeDepthColor(feature) {
     depth = feature.geometry.coordinates[2];
@@ -56,8 +56,8 @@ d3.json(queryUrl).then(function (data) {
     quake = features[i];
     // Conditionals for country points
     L.circle(location(quake), {
-      weight: 1,//stroke: false,
-      fillOpacity: 0.75,
+      weight: 0.11,//stroke: false,
+      fillOpacity: 0.5,
       color: 'black',
       fillColor: quakeDepthColor(quake),
       radius: markerSize(quake)
@@ -66,14 +66,8 @@ d3.json(queryUrl).then(function (data) {
                   <p>Depth: ${quake.geometry.coordinates[2]}</p>`).addTo(myMap);
     console.log(quake);
   }
-  //var legend = 
-  L.control.Legend({
-    position: 'bottomright'
-    /*legends: [{
-      type: 'rectangle'
-    }]*/
-  });//.addTo(myMap);
-  legend.onAdd = function(myMap) {
+  var legend = L.control({position: 'bottomright'});//.addTo(myMap);
+  legend.onAdd = function(Map) {
     var div = L.DomUtil.create('div', 'info legend'),
       depths = [-10, 10, 30, 50, 70, 90],
       labels = [],
@@ -87,7 +81,7 @@ d3.json(queryUrl).then(function (data) {
     }
     div.innerHTML = labels.join('<br>');
     return div;
-  };
+  }
   legend.addTo(myMap);
 });
 /*
