@@ -61,6 +61,7 @@ d3.json(queryUrl).then(function (data) {
     console.log(quake);
   }
   L.control.Legend({
+    title: 'Depth',
     position: 'bottomright',
     collapsed: 'false',
     opacity: 1,
@@ -68,7 +69,30 @@ d3.json(queryUrl).then(function (data) {
       label: '-1 - 10',
       type: 'rectangle',
       fillColor: '#00ff00'
-      
+    },
+    {
+      label: '10 - 30',
+      type: 'rectangle',
+      fillColor: '#ffff00'
+    },
+    {
+      label: '30 - 50',
+      type: 'rectangle',
+      fillColor: '#ffcc66'
+    },{
+      label: '50 - 70',
+      type: 'rectangle',
+      fillColor: '#ffcc00'
+    },
+    {
+      label: '70 - 90',
+      type: 'rectangle',
+      fillColor: '#ff9900'
+    },
+    {
+      label: '90+',
+      type: 'rectangle',
+      fillColor: '#ff0000'
     }]
   }).addTo(myMap);
 });
