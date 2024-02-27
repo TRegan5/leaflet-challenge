@@ -63,7 +63,7 @@ d3.json(queryUrl).then(function (data) {
   L.control.Legend({
     title: 'Depth',
     position: 'bottomright',
-    collapsed: 'false',
+    collapsed: false,
     opacity: 1,
     legends: [{
       label: '-1 - 10',
@@ -79,7 +79,8 @@ d3.json(queryUrl).then(function (data) {
       label: '30 - 50',
       type: 'rectangle',
       fillColor: '#ffcc66'
-    },{
+    },
+    {
       label: '50 - 70',
       type: 'rectangle',
       fillColor: '#ffcc00'
@@ -94,5 +95,5 @@ d3.json(queryUrl).then(function (data) {
       type: 'rectangle',
       fillColor: '#ff0000'
     }]
-  }).addTo(myMap);
+    }).addTo(myMap);
 });
